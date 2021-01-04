@@ -5,7 +5,7 @@ namespace SemanticValidation
 {
     public abstract class Validatable
     {
-        private Contract Contract { get; set; }
+        private ClauseSpecification Contract { get; set; }
 
         public abstract void Validate(Contract contract);
 
@@ -13,7 +13,7 @@ namespace SemanticValidation
         {
             get
             {
-                Contract = new Contract();
+                Contract = new ClauseSpecification();
 
                 Validate(Contract);
 

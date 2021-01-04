@@ -3,13 +3,18 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30717.126
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SemanticValidation", "SemanticValidation\SemanticValidation.csproj", "{45D81DEF-DB60-494A-AB0F-AFB84BEA3740}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SemanticValidation", "SemanticValidation\SemanticValidation.csproj", "{45D81DEF-DB60-494A-AB0F-AFB84BEA3740}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{ADEAEF83-A5C8-4EA1-93C6-9ADD9F6F5A86}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{F26ACA21-6671-45C2-A3CC-E29DF56C15D3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SemanticValidation.UnitTests", "SemanticValidation.UnitTests\SemanticValidation.UnitTests.csproj", "{D88F64FD-D050-41BB-8456-00909A137733}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SemanticValidation.UnitTests", "SemanticValidation.UnitTests\SemanticValidation.UnitTests.csproj", "{D88F64FD-D050-41BB-8456-00909A137733}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{1BBDC7F7-8C03-45E8-B741-019E914B9531}"
+	ProjectSection(SolutionItems) = preProject
+		Patterns.txt = Patterns.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

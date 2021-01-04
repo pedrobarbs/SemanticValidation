@@ -6,11 +6,17 @@ namespace SemanticValidation
     {
         public string Brand { get; set; }
 
-        public override void Validate(Contract contract)
+        public override void Validate(Contract<Car> contract)
         {
+            //contract
+            //    .Requires()
+            //    .MustBeGreaterThan(new DateTime(), new DateTime(), "teste");
+
+
             contract
-                .Requires()
-                .MustBeGreaterThan(new DateTime(), new DateTime(), "teste");
+                .Property(prop => prop.Brand)
+                .Cannot_Be__Null_Empty_WhiteSpace()
+                .WithDefaultMessage();
         }
     }
 }
