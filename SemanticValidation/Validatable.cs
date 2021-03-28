@@ -29,6 +29,6 @@ namespace SemanticValidation
         }
 
 
-        public bool IsValid { get => !IsInvalid; }
+        public bool IsValid { get => IsInvalid is false; }
     }
 }

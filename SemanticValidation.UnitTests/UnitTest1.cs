@@ -10,11 +10,12 @@ namespace SemanticValidation.UnitTests
         [Fact]
         public void Test1()
         {
-            var car = new Car();
+            var car = new Car() { Brand = "dsadsa"};
+            //var car = new Car();
 
             var valid = car.IsValid;
 
-            Console.WriteLine(car.IsValid);
+            Assert.True(valid);
         }
 
         [Fact]

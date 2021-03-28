@@ -30,7 +30,20 @@ namespace SemanticValidation
         //    return clauseSpec;
         //}
 
-        public StringClauseSpecification Property(Expression<Func<T, string>> expression)
+        //public StringClauseSpecification Property(Expression<Func<T, string>> expression)
+        //{
+        //    var (name, type, value) = expression.AsMemberExpression().ExtractNameTypeAndValue<string>();
+
+        //    var clauseSpec = new StringClauseSpecification(name, value);
+
+        //    // TODO: verificar se não existe duplicado na lista
+        //    ClauseSpecifications.Add(clauseSpec);
+
+        //    return clauseSpec;
+        //}
+
+        // TODO: colocar generics
+        public StringClauseSpecification Property(Expression<Func<string>> expression)
         {
             var (name, type, value) = expression.AsMemberExpression().ExtractNameTypeAndValue<string>();
 

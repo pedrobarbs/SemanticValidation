@@ -19,7 +19,7 @@ namespace SemanticValidation
         public ClauseSpecification<string> Cannot_Be__Null_Empty_WhiteSpace()
         {
             DefaultMessage = $"Property {PropertyName} cannot be null, empty or whitespace. Current value: {Value} ({Value.Categorize()})";
-            Condition = () => string.IsNullOrWhiteSpace(Value);
+            Condition = () => string.IsNullOrWhiteSpace(Value) is false;
 
             return this;
         }
