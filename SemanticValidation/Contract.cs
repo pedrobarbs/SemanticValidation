@@ -1,8 +1,7 @@
-﻿using SemanticValidation.Extensions;
-using SemanticValidation.Util;
+﻿using SemanticValidation.Contracts;
+using SemanticValidation.Extensions;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 
 namespace SemanticValidation
@@ -12,30 +11,49 @@ namespace SemanticValidation
         public Contract()
         {
             Clauses = new List<Clause>();
+            ClauseSpecifications = new List<ClauseSpecification>();
         }
 
         public List<Clause> Clauses { get; private set; }
+        public List<ClauseSpecification> ClauseSpecifications { get; private set; }
 
-        public DateTimeClauseSpecification Property(Expression<Func<T, DateTime>> expression) 
-        {
-            var (name, value) = expression.AsMemberExpression().ExtractNameAndValue<DateTime>();
+        // TODO: Tornar generico
+        //public DateTimeClauseSpecification Property(Expression<Func<T, DateTime>> expression)
+        //{
+        //    var (name, type, value) = expression.AsMemberExpression().ExtractNameTypeAndValue<DateTime>();
 
-            return new DateTimeClauseSpecification(name, value);
-        }
+        //    var clauseSpec = new DateTimeClauseSpecification(name, value);
+
+        //    // TODO: verificar se não existe duplicado na lista
+        //    ClauseSpecifications.Add(clauseSpec);
+
+        //    return clauseSpec;
+        //}
 
         public StringClauseSpecification Property(Expression<Func<T, string>> expression)
         {
-            var (name, value) = expression.AsMemberExpression().ExtractNameAndValue<string>();
+            var (name, type, value) = expression.AsMemberExpression().ExtractNameTypeAndValue<string>();
 
-            return new DateTimeClauseSpecification(name, value);
+            var clauseSpec = new StringClauseSpecification(name, value);
+
+            // TODO: verificar se não existe duplicado na lista
+            ClauseSpecifications.Add(clauseSpec);
+
+            return clauseSpec;
         }
 
-        //public DateTimeClauseSpecification Property<TProperty>(MemberExpression expression)
-        //{
-        //    var name = expression.Member.Name;
-        //    var value = expression.Member.Value;
-        //    return new DateTimeClauseSpecification(name, value);
-        //}
+        public bool IsValid() 
+        {
+            foreach (var clause in ClauseSpecifications) 
+            {
+                if (clause.Condition() is false) 
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
 
         //public void HasClauses(params Func<ClauseSpecification, Clause>[] clauses)
         //{

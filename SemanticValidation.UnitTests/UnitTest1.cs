@@ -12,6 +12,8 @@ namespace SemanticValidation.UnitTests
         {
             var car = new Car();
 
+            var valid = car.IsValid;
+
             Console.WriteLine(car.IsValid);
         }
 

@@ -2,7 +2,7 @@
 
 namespace SemanticValidation
 {
-    public class Car : Validatable
+    public class Car : Validatable<Car>
     {
         public string Brand { get; set; }
 
@@ -13,10 +13,10 @@ namespace SemanticValidation
             //    .MustBeGreaterThan(new DateTime(), new DateTime(), "teste");
 
 
-            contract
-                .Property(prop => prop.Brand)
+            contract.Property(prop => prop.Brand)
                 .Cannot_Be__Null_Empty_WhiteSpace()
-                .WithDefaultMessage();
+                .WithMessage("Teste");           
+
         }
     }
 }

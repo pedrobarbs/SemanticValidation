@@ -5,7 +5,7 @@ namespace SemanticValidation.Extensions
 {
     public static class ExpressionExtensions
     {
-        public static T GetValue<T>(this MemberExpression expression) 
+        public static T GetValue<T>(this MemberExpression expression)
         {
             var objectMember = Expression.Convert(expression, typeof(T));
 
@@ -21,9 +21,9 @@ namespace SemanticValidation.Extensions
             return (expression.Body as MemberExpression);
         }
 
-        public static (string, T) ExtractNameAndValue<T>(this MemberExpression expression) 
+        public static (string, Type, T) ExtractNameTypeAndValue<T>(this MemberExpression expression)
         {
-            return (expression.Member.Name, expression.GetValue<T>());
+            return (expression.Member.Name, typeof(T), expression.GetValue<T>());
         }
     }
 }
