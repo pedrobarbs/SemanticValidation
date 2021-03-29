@@ -42,7 +42,10 @@ namespace SemanticValidation.Extensions
         {
             var value = ExpressionUtilities.GetValueUsingCompile(expression);
             //return (expression.Member.Name, typeof(T), expression.GetValue2<T>());
-            return (expression.Member.Name, typeof(T), (T)value);
+
+            // TODO: Parametrizar por injeção dependencia se quer nome completo ou não
+            var fullName = $"{expression.Member.DeclaringType.Name}.{expression.Member.Name}";
+            return (fullName, typeof(T), (T)value);
         }
     }
 }

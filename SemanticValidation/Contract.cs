@@ -17,49 +17,40 @@ namespace SemanticValidation
         public List<Clause> Clauses { get; private set; }
         public List<ClauseSpecification> ClauseSpecifications { get; private set; }
 
-        // TODO: Tornar generico
-        //public DateTimeClauseSpecification Property(Expression<Func<T, DateTime>> expression)
-        //{
-        //    var (name, type, value) = expression.AsMemberExpression().ExtractNameTypeAndValue<DateTime>();
-
-        //    var clauseSpec = new DateTimeClauseSpecification(name, value);
-
-        //    // TODO: verificar se não existe duplicado na lista
-        //    ClauseSpecifications.Add(clauseSpec);
-
-        //    return clauseSpec;
-        //}
-
-        //public StringClauseSpecification Property(Expression<Func<T, string>> expression)
-        //{
-        //    var (name, type, value) = expression.AsMemberExpression().ExtractNameTypeAndValue<string>();
-
-        //    var clauseSpec = new StringClauseSpecification(name, value);
-
-        //    // TODO: verificar se não existe duplicado na lista
-        //    ClauseSpecifications.Add(clauseSpec);
-
-        //    return clauseSpec;
-        //}
-
         // TODO: colocar generics
-        public StringClauseSpecification Property(Expression<Func<string>> expression)
+        private dynamic Property<U>(Expression<Func<U>> expression)
         {
-            var (name, type, value) = expression.AsMemberExpression().ExtractNameTypeAndValue<string>();
+            var (name, type, value) = expression.AsMemberExpression().ExtractNameTypeAndValue<U>();
 
-            var clauseSpec = new StringClauseSpecification(name, value);
+            dynamic clauseSpec = GetTypeSpecificSpec(name, type, value);
+
+            var casted = (ClauseSpecification)clauseSpec;
 
             // TODO: verificar se não existe duplicado na lista
-            ClauseSpecifications.Add(clauseSpec);
+            ClauseSpecifications.Add(casted);
 
             return clauseSpec;
         }
 
-        public bool IsValid() 
+        private static dynamic GetTypeSpecificSpec<U>(string name, Type type, U value)
         {
-            foreach (var clause in ClauseSpecifications) 
+            return type switch
             {
-                if (clause.Condition() is false) 
+                Type stringType when stringType == typeof(string) => new StringClauseSpecification(name, (string)(object)value),
+
+                _ => throw new NotImplementedException($"O tipo {type.Name} ainda não possui suporte no framework"),
+            };
+        }
+
+        public StringClauseSpecification Property(Expression<Func<string>> expression)
+            => (StringClauseSpecification)Property<string>(expression);
+
+
+        public bool IsValid()
+        {
+            foreach (var clause in ClauseSpecifications)
+            {
+                if (clause.Condition() is false)
                 {
                     return false;
                 }
@@ -68,12 +59,22 @@ namespace SemanticValidation
             return true;
         }
 
-        //public void HasClauses(params Func<ClauseSpecification, Clause>[] clauses)
-        //{
-        //    foreach (var clause in clauses)
-        //    {
-        //        Clauses.Add(clause(new Clause()));
-        //    }
-        //}
+        public List<ValidationMessage> ValidationMessages
+        {
+            get
+            {
+                var messages = new List<ValidationMessage>();
+
+                foreach (var clause in ClauseSpecifications)
+                {
+                    if (clause.Condition() is false)
+                    {
+                        messages.Add(new ValidationMessage(clause.PropertyName, clause.Message));
+                    }
+                }
+
+                return messages;
+            }
+        }
     }
 }

@@ -8,8 +8,6 @@ namespace SemanticValidation
     // TODO: colocar generics
     public class StringClauseSpecification : ClauseSpecification<string>
     {
-
-
         public StringClauseSpecification(string propertyName, string value) : base(propertyName, value)
         {
         }

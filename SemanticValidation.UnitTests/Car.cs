@@ -16,7 +16,6 @@ namespace SemanticValidation
             contract.Property(() => Model)
                 .Cannot_Be__Null_Empty_WhiteSpace()
                 .WithMessage("O modelo precisa ser informado");
-
         }
     }
 }

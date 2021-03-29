@@ -21,10 +21,10 @@ namespace SemanticValidation.Contracts
             PropertyName = propertyName;
         }
 
-        protected readonly string PropertyName;
+        internal readonly string PropertyName;
         internal Func<bool> Condition;
         protected string DefaultMessage;
-        protected string Message { get; private set; }
+        internal string Message { get; private set; }
 
 
         public void WithMessage(string message)

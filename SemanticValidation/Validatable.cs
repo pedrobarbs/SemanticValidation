@@ -1,6 +1,5 @@
-﻿using SemanticValidation.Contracts;
-using System;
-using System.Linq;
+﻿using System;
+using System.Collections.Generic;
 
 namespace SemanticValidation
 {
@@ -10,25 +9,37 @@ namespace SemanticValidation
 
         public abstract void Validate(Contract<T> contract);
 
+        private void Validate()
+        {
+            Contract = new Contract<T>();
+
+            Validate(Contract);
+
+            if (Contract is null)
+            {
+                // TODO: Colocar em arquivo separado de mensagens com região.
+                throw new ArgumentNullException(nameof(Contract), "Contract cannot be null.");
+            }
+        }
+
+        public bool IsValid { get => IsInvalid is false; }
+
         public bool IsInvalid
         {
             get
             {
-                Contract = new Contract<T>();
-
-                Validate(Contract);
-
-                if (Contract is null) 
-                {
-                    // TODO: Colocar em arquivo separado de mensagens com região.
-                    throw new ArgumentNullException(nameof(Contract), "Contract cannot be null.");
-                }
-
+                Validate();
                 return Contract.IsValid() is false;
             }
         }
 
-
-        public bool IsValid { get => IsInvalid is false; }
+        public List<ValidationMessage> ValidationMessages
+        {
+            get
+            {
+                Validate();
+                return Contract.ValidationMessages;
+            }
+        }
     }
 }
