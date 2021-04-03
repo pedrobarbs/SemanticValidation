@@ -8,22 +8,38 @@ namespace SemanticValidation.UnitTests
     public class UnitTest1
     {
         [Fact]
-        public void Test1()
+        public void CarIsValid()
         {
-            var car = new Car();
+            var car = new Car() { Brand = "ABC", Model = "DEF"};
+            //var car = new Car();
 
-            Console.WriteLine(car.IsValid);
+            var messages = car.ValidationMessages;
+            Assert.True(car.IsValid);
+            Assert.True(messages.Count is 0);
         }
 
         [Fact]
-        public void Test2()
+        public void CarIsInvalid()
         {
-            var list = new List<string>();
+            var car = new Car();
+            //var car = new Car();
 
-            var teste = list.Where(prop => prop.Length > 50).Select(p => p.ToLowerInvariant()).ToList();
+            var messages = car.ValidationMessages;
 
-            Assert.Null(teste);
+            Assert.True(car.IsInvalid);
+            Assert.Equal(2, messages.Count);
+        }
 
+        [Fact]
+        public void ThrowsException()
+        {
+            var car = new Car();
+            //var car = new Car();
+
+            var messages = car.ValidationMessages;
+
+            Assert.True(car.IsInvalid);
+            Assert.Equal(2, messages.Count);
         }
     }
 }

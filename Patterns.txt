@@ -1,0 +1,2 @@
+Messages cannot have "." at the end.
+Message format: "[RULE]. Current value: [VALUE]"

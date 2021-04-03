@@ -1,33 +1,45 @@
 ﻿using System;
-using System.Linq;
+using System.Collections.Generic;
 
 namespace SemanticValidation
 {
-    public abstract class Validatable
+    public abstract class Validatable<T> where T : class
     {
-        private Contract Contract { get; set; }
+        private Contract<T> Contract { get; set; }
 
-        public abstract void Validate(Contract contract);
+        public abstract void Validate(Contract<T> contract);
+
+        private void Validate()
+        {
+            Contract = new Contract<T>();
+
+            Validate(Contract);
+
+            if (Contract is null)
+            {
+                // TODO: Colocar em arquivo separado de mensagens com região.
+                throw new ArgumentNullException(nameof(Contract), "Contract cannot be null.");
+            }
+        }
+
+        public bool IsValid { get => IsInvalid is false; }
 
         public bool IsInvalid
         {
             get
             {
-                Contract = new Contract();
-
-                Validate(Contract);
-
-                if (Contract is null) 
-                {
-                    // TODO: Colocar em arquivo separado de mensagens com região.
-                    throw new ArgumentNullException(nameof(Contract), "Contract cannot be null.");
-                }
-
-                return Contract.Messages.Any();
+                Validate();
+                return Contract.IsValid() is false;
             }
         }
 
-
-        public bool IsValid { get => !IsInvalid; }
+        public List<ValidationMessage> ValidationMessages
+        {
+            get
+            {
+                Validate();
+                return Contract.ValidationMessages;
+            }
+        }
     }
 }
