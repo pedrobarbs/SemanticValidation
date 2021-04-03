@@ -11,6 +11,7 @@ namespace SemanticValidation
         {
             contract.Property(() => Brand)
                 .Cannot_Be__Null_Empty_WhiteSpace()
+                .Must_Have__Maximum_Length_Of_(4)
                 .WithMessage("A marca precisa ser informada");
 
             contract.Property(() => Model)

@@ -2,6 +2,7 @@
 using SemanticValidation.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 
 namespace SemanticValidation
@@ -10,47 +11,46 @@ namespace SemanticValidation
     {
         public Contract()
         {
-            Clauses = new List<Clause>();
-            ClauseSpecifications = new List<ClauseSpecification>();
+            //Clauses = new List<Clause>();
+            Clauses = new HashSet<Clauses>();
         }
 
-        public List<Clause> Clauses { get; private set; }
-        public List<ClauseSpecification> ClauseSpecifications { get; private set; }
+        //public List<Clause> Clauses { get; private set; }
+        public HashSet<Clauses> Clauses { get; private set; }
 
-        // TODO: colocar generics
         private dynamic Property<U>(Expression<Func<U>> expression)
         {
             var (name, type, value) = expression.AsMemberExpression().ExtractNameTypeAndValue<U>();
 
-            dynamic clauseSpec = GetTypeSpecificSpec(name, type, value);
+            dynamic clause = GetTypeSpecificSpec(name, type, value);
 
-            var casted = (ClauseSpecification)clauseSpec;
+            var casted = (Clauses)clause;
 
             // TODO: verificar se não existe duplicado na lista
-            ClauseSpecifications.Add(casted);
+            Clauses.Add(casted);
 
-            return clauseSpec;
+            return clause;
         }
 
         private static dynamic GetTypeSpecificSpec<U>(string name, Type type, U value)
         {
             return type switch
             {
-                Type stringType when stringType == typeof(string) => new StringClauseSpecification(name, (string)(object)value),
+                Type stringType when stringType == typeof(string) => new StringClauses(name, (string)(object)value),
 
                 _ => throw new NotImplementedException($"O tipo {type.Name} ainda não possui suporte no framework"),
             };
         }
 
-        public StringClauseSpecification Property(Expression<Func<string>> expression)
-            => (StringClauseSpecification)Property<string>(expression);
+        public StringClauses Property(Expression<Func<string>> expression)
+            => (StringClauses)Property<string>(expression);
 
 
         public bool IsValid()
         {
-            foreach (var clause in ClauseSpecifications)
+            foreach (var clause in Clauses)
             {
-                if (clause.Condition() is false)
+                if (ClauseIsInvalid(clause))
                 {
                     return false;
                 }
@@ -63,18 +63,37 @@ namespace SemanticValidation
         {
             get
             {
-                var messages = new List<ValidationMessage>();
+                var messages = new HashSet<ValidationMessage>();
 
-                foreach (var clause in ClauseSpecifications)
+                foreach (var clause in Clauses)
                 {
-                    if (clause.Condition() is false)
+                    if (ClauseIsInvalid(clause))
                     {
-                        messages.Add(new ValidationMessage(clause.PropertyName, clause.Message));
+                        var clauseMessages = clause.Conditions
+                            .Where(condition => condition.Expression.Compile().Invoke() is false)
+                            .Select(p => p.ValidationMessage)
+                            .Distinct();
+
+                        foreach (var clauseMessage in clauseMessages)
+                        {
+                            messages.Add(new ValidationMessage(clause.PropertyName, clauseMessage));
+                        }
                     }
                 }
 
-                return messages;
+                return messages.ToList();
             }
         }
+
+        private static bool ClauseIsInvalid(Clauses clause)
+        {
+            return ClauseIsValid(clause) is false;
+        }
+
+        private static bool ClauseIsValid(Clauses clause)
+        {
+            return clause.Conditions.All(condition => condition.Expression.Compile().Invoke() is true);
+        }
+
     }
 }

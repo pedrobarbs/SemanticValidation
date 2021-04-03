@@ -1,9 +1,9 @@
-﻿namespace SemanticValidation
-{
-    public interface IClauseBuilder
-    {
-        Clause WithMessage(string message);
+﻿//namespace SemanticValidation
+//{
+//    public interface IClauseBuilder
+//    {
+//        Clause WithMessage(string message);
 
-        Clause WithDefaultMessage();
-    }
-}
+//        Clause WithDefaultMessage();
+//    }
+//}
