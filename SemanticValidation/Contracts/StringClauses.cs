@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 
 namespace SemanticValidation
 {
-    public class StringClauses : ClauseSuite<string>
+    public class StringClauses : Clause<string>
     {
         public StringClauses(string propertyName, string? value) : base(propertyName, value)
         { }
