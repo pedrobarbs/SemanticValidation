@@ -18,8 +18,8 @@ namespace SemanticValidation.Util.EqualityComparers
         public int GetHashCode([DisallowNull] Condition obj)
         {
             // TODO: fazer null check 
-            // TODO: verificar "^" é correto
-            return HashCode.Combine(expressionEqualityComparer.GetHashCode(obj.Expression) ^ obj.ValidationMessage.GetHashCode());
+            // TODO: verificar o que é melhor HashCode.Combine ou "^"
+            return HashCode.Combine(expressionEqualityComparer.GetHashCode(obj.Expression), obj.ValidationMessage.GetHashCode());
         }
     }
 }
