@@ -8,27 +8,30 @@ namespace SemanticValidation.Contracts
 {
     // PARA TIPOS DE REFERENCIA
     // TODO: fazer para tipos primitivos
-    public class ClausesSpecification<T> : Clauses where T : class
+    public class ClauseSuite<T> : Clause where T : class
     {
-        protected readonly T Value;
+        protected readonly T? Value;
 
-        public ClausesSpecification(string propertyName, T value): base(propertyName)
+        public ClauseSuite(string propertyName, T? value) : base(propertyName)
         {
             Value = value;
         }
     }
 
-    public class Clauses
+    public class Clause
     {
-        public Clauses(string propertyName)
+        public Clause(string propertyName)
         {
             PropertyName = propertyName;
             Conditions = new HashSet<Condition>();
         }
 
         internal readonly string PropertyName;
+
         internal HashSet<Condition> Conditions;
+
         protected string DefaultMessage;
+
         internal string Message { get; private set; }
 
 
@@ -46,7 +49,7 @@ namespace SemanticValidation.Contracts
             // TODO: sobrescrever operador pra comparar expressoes corretamente
             var equal = Conditions.FirstOrDefault(c => c.Expression == conditionExpression);
 
-            if (equal is null is false) 
+            if (equal is null is false)
             {
                 equal.ValidationMessage = message;
                 return;
@@ -57,6 +60,15 @@ namespace SemanticValidation.Contracts
                 Expression = conditionExpression,
                 ValidationMessage = message
             });
+        }
+
+        internal List<string> GetViolatedClauseMessages()
+        {
+            return Conditions
+                .Where(condition => condition.Expression.Compile().Invoke() is false)
+                .Select(p => p.ValidationMessage)
+                .Distinct()
+                .ToList();
         }
     }
 }

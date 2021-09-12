@@ -13,8 +13,8 @@ namespace SemanticValidation.Util
             if (first is null && !(second is null)) return false;
             if (!(first is null) && second is null) return false;
 
-            if (first.Property.Equals(second.Property, StringComparison.InvariantCultureIgnoreCase)
-                && first.Message.Equals(second.Message, StringComparison.InvariantCultureIgnoreCase))
+            if (first!.Property.Equals(second!.Property, StringComparison.InvariantCultureIgnoreCase)
+                && first!.Message.Equals(second!.Message, StringComparison.InvariantCultureIgnoreCase))
             {
                 return true;
             }

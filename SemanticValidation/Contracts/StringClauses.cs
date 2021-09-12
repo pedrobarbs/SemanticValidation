@@ -5,13 +5,12 @@ using System.Linq.Expressions;
 
 namespace SemanticValidation
 {
-    public class StringClauses : ClausesSpecification<string>
+    public class StringClauses : ClauseSuite<string>
     {
-        public StringClauses(string propertyName, string value) : base(propertyName, value)
-        {
-        }
+        public StringClauses(string propertyName, string? value) : base(propertyName, value)
+        { }
 
-        public StringClauses Cannot_Be__Null_Empty_WhiteSpace()
+        public StringClauses Must_Not_Be___Null_Empty_WhiteSpace()
         {
             BuildCondition(
                 conditionExpression: () => string.IsNullOrWhiteSpace(Value) == false,
@@ -20,7 +19,7 @@ namespace SemanticValidation
             return this;
         }
 
-        public StringClauses Must_Have__Maximum_Length_Of_(int maximumLength)
+        public StringClauses Must_Have___Maximum_Length_Of_(int maximumLength)
         {
             BuildCondition(
                 conditionExpression: CheckOnlyIfHasValue(() => Value.Length <= maximumLength),
@@ -29,9 +28,9 @@ namespace SemanticValidation
             return this;
         }
 
-        public Expression<Func<bool>> CheckOnlyIfHasValue(Func<bool> func) 
-        {
-            return () => string.IsNullOrEmpty(Value) || func();
-        }
+        #region Helpers
+        private Expression<Func<bool>> CheckOnlyIfHasValue(Func<bool> func) 
+            => () => string.IsNullOrEmpty(Value) || func();
+        #endregion
     }
 }

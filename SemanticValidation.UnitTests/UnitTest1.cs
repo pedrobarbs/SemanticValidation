@@ -15,7 +15,7 @@ namespace SemanticValidation.UnitTests
 
             var messages = car.ValidationMessages;
             Assert.True(car.IsValid);
-            Assert.True(messages.Count is 0);
+            Assert.True(messages is null);
         }
 
         [Fact]
