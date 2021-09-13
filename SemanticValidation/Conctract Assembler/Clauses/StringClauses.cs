@@ -1,9 +1,8 @@
-﻿using SemanticValidation.Contracts;
-using SemanticValidation.Extensions;
+﻿using SemanticValidation.Extensions;
 using System;
 using System.Linq.Expressions;
 
-namespace SemanticValidation
+namespace SemanticValidation.Contract_Assembler.Clauses
 {
     public class StringClauses : Clause<string>
     {
@@ -29,7 +28,7 @@ namespace SemanticValidation
         }
 
         #region Helpers
-        private Expression<Func<bool>> CheckOnlyIfHasValue(Func<bool> func) 
+        private Expression<Func<bool>> CheckOnlyIfHasValue(Func<bool> func)
             => () => string.IsNullOrEmpty(Value) || func();
         #endregion
     }

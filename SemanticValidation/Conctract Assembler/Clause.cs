@@ -1,10 +1,10 @@
-﻿using SemanticValidation.Util;
+﻿using SemanticValidation.Util.EqualityComparers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace SemanticValidation.Contracts
+namespace SemanticValidation.Contract_Assembler
 {
     public class Clause<T> : Clause where T : class
     {
@@ -21,7 +21,7 @@ namespace SemanticValidation.Contracts
         public Clause(string propertyName)
         {
             PropertyName = propertyName;
-            Conditions = new HashSet<Condition>(new ExpressionEqualityComparer());
+            Conditions = new HashSet<Condition>(new ConditionEqualityComparer());
         }
 
         internal readonly string PropertyName;

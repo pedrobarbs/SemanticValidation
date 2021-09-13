@@ -3,17 +3,17 @@ using System.Linq.Expressions;
 
 namespace SemanticValidation.Util.EqualityComparers
 {
+    // TODO: Ler, entender e melhorar, principalmente o GetHashCode
     public class ExpressionEqualityComparer : IEqualityComparer<Expression>
     {
         public bool Equals(Expression? x, Expression? y)
         {
+            // TODO: fazer null check
             return EqualsRecursive(x, y);
         }
 
-        private bool EqualsRecursive(Expression? x, Expression? y)
+        private bool EqualsRecursive(Expression x, Expression y)
         {
-            // TODO fazer null check
-
             if (ReferenceEquals(x, y))
                 return true;
 

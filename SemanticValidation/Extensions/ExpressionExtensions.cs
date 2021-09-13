@@ -17,15 +17,9 @@ namespace SemanticValidation.Extensions
             return getter();
         }
 
-        //public static T GetValue2<T>(this MemberExpression expression)
-        //{
-
-        //}
-
         public static MemberExpression AsMemberExpression<U>(this Expression<Func<U>> expression)
         {
-            MemberExpression member = expression.Body as MemberExpression;
-            if (member == null)
+            if (expression.Body is not MemberExpression member)
             {
                 // The property access might be getting converted to object to match the func
                 // If so, get the operand and see if that's a member expression
@@ -40,11 +34,14 @@ namespace SemanticValidation.Extensions
 
         public static (string, Type, T) ExtractNameTypeAndValue<T>(this MemberExpression expression)
         {
+            expression.ThrowIfNull(nameof(expression));
+
             var value = ExpressionUtilities.GetValueUsingCompile(expression);
             //return (expression.Member.Name, typeof(T), expression.GetValue2<T>());
 
             // TODO: Parametrizar por injeção dependencia se quer nome completo ou não
-            var fullName = $"{expression.Member.DeclaringType.Name}.{expression.Member.Name}";
+            var fullName = $"{expression.Member?.DeclaringType?.Name}.{expression.Member?.Name}";
+
             return (fullName, typeof(T), (T)value);
         }
     }

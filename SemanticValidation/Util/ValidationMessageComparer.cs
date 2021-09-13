@@ -7,7 +7,7 @@ namespace SemanticValidation.Util
     {
         private readonly IEqualityComparer<string> _c = EqualityComparer<string>.Default;
 
-        public override bool Equals(ValidationMessage first, ValidationMessage second)
+        public override bool Equals(ValidationMessage? first, ValidationMessage? second)
         {
             if (first is null && second is null) return true;
             if (first is null && !(second is null)) return false;

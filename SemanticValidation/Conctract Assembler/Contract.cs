@@ -1,11 +1,11 @@
-﻿using SemanticValidation.Contracts;
+﻿using SemanticValidation.Contract_Assembler.Clauses;
 using SemanticValidation.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace SemanticValidation
+namespace SemanticValidation.Contract_Assembler
 {
     public class Contract<T> where T : class
     {
@@ -41,7 +41,7 @@ namespace SemanticValidation
             {
                 var type when IsSameType<string>(type) => new StringClauses(name, (string?)(object?)value),
 
-                //var type => throw new NotImplementedException($"O tipo {type.FullName} ainda não possui suporte no framework"),
+                // TODO: fazer caso base
                 _ => new {}
             };
         }

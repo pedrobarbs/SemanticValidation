@@ -10,10 +10,6 @@ namespace SemanticValidation
             Message = message;
         }
 
-        public ValidationMessage()
-        {
-        }
-
         public string Property { get; set; }
         public string Message { get; set; }
 
@@ -21,8 +17,8 @@ namespace SemanticValidation
         {
             if (other is null) return false;
 
-            if (other.Message.Equals(Message, StringComparison.InvariantCultureIgnoreCase) 
-                && other.Property.Equals(Property, StringComparison.InvariantCultureIgnoreCase))
+            if (other.Message.Equals(Message, StringComparison.InvariantCultureIgnoreCase) &&
+                other.Property.Equals(Property, StringComparison.InvariantCultureIgnoreCase))
             {
                 return true;
             }

@@ -1,11 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Xunit;
 
 namespace SemanticValidation.UnitTests
 {
-    public class UnitTest1
+    public class CarTests
     {
         [Fact]
         public void CarIsValid()
