@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace SemanticValidation.Util.EqualityComparers
@@ -100,58 +101,68 @@ namespace SemanticValidation.Util.EqualityComparers
         {
             if (x is LambdaExpression lambdaExpressionX)
             {
-                return XorHashCodes(lambdaExpressionX.Parameters) ^
-                    GetHashCode(lambdaExpressionX.Body);
+                return 
+                    HashCode.Combine(
+                        AccumulatedHashCodes(lambdaExpressionX.Parameters),
+                        GetHashCode(lambdaExpressionX.Body));
             }
 
 
             if (x is BinaryExpression binaryExpressionX)
             {
                 int methodHashCode = binaryExpressionX.Method != null ? binaryExpressionX.Method.GetHashCode() : binaryExpressionX.NodeType.GetHashCode();
-                return methodHashCode ^
-                    GetHashCode(binaryExpressionX.Left) ^
-                    GetHashCode(binaryExpressionX.Right);
+                
+                return HashCode.Combine(
+                    methodHashCode, 
+                    GetHashCode(binaryExpressionX.Left),
+                    GetHashCode(binaryExpressionX.Right));
             }
 
 
             if (x is UnaryExpression unaryExpressionX)
             {
                 int methodHashCode = unaryExpressionX.Method != null ? unaryExpressionX.Method.GetHashCode() : unaryExpressionX.NodeType.GetHashCode();
-                return methodHashCode ^
-                    GetHashCode(unaryExpressionX.Operand);
+
+                return HashCode.Combine(
+                    methodHashCode,
+                    GetHashCode(unaryExpressionX.Operand));
             }
 
 
             if (x is MethodCallExpression methodCallExpressionX)
             {
-                return XorHashCodes(methodCallExpressionX.Arguments) ^
-                    methodCallExpressionX.Method.GetHashCode() ^
-                    GetHashCode(methodCallExpressionX.Object);
+                return HashCode.Combine(
+                    AccumulatedHashCodes(methodCallExpressionX.Arguments),
+                    methodCallExpressionX.Method.GetHashCode(),
+                    GetHashCode(methodCallExpressionX.Object));
             }
 
 
             if (x is ConditionalExpression conditionalExpressionX)
             {
                 return
-                    GetHashCode(conditionalExpressionX.Test) ^
-                    GetHashCode(conditionalExpressionX.IfTrue) ^
-                    GetHashCode(conditionalExpressionX.IfFalse);
+                    HashCode.Combine(
+                        GetHashCode(conditionalExpressionX.Test),
+                        GetHashCode(conditionalExpressionX.IfTrue),
+                        GetHashCode(conditionalExpressionX.IfFalse));
             }
 
 
             if (x is InvocationExpression invocationExpressionX)
             {
                 return
-                    XorHashCodes(invocationExpressionX.Arguments) ^
-                    GetHashCode(invocationExpressionX.Expression);
+                    HashCode.Combine(
+                        AccumulatedHashCodes(invocationExpressionX.Arguments),
+                        GetHashCode(invocationExpressionX.Expression));
             }
 
 
             if (x is MemberExpression memberExpressionX)
             {
                 return
-                    memberExpressionX.Member.GetHashCode() ^
-                    GetHashCode(memberExpressionX.Expression);
+                    HashCode.Combine(
+                        memberExpressionX.Member.GetHashCode(),
+                        GetHashCode(memberExpressionX.Expression));
             }
 
 
@@ -165,20 +176,21 @@ namespace SemanticValidation.Util.EqualityComparers
             {
 
                 return
-                    XorHashCodes(newExpressionX.Arguments) ^
-                    newExpressionX.Constructor.GetHashCode();
+                    HashCode.Combine(
+                        AccumulatedHashCodes(newExpressionX.Arguments),
+                        newExpressionX.Constructor.GetHashCode());
             }
 
             return 0;
         }
 
-        private int XorHashCodes<T>(IEnumerable<T> expressions)
+        private int AccumulatedHashCodes<T>(IEnumerable<T> expressions)
             where T : Expression
         {
             int accumulatedHashCode = 0;
             foreach (var expression in expressions)
             {
-                accumulatedHashCode ^= GetHashCode(expression);
+                accumulatedHashCode = HashCode.Combine(GetHashCode(expression), accumulatedHashCode);
             }
 
             return accumulatedHashCode;

@@ -5,8 +5,14 @@ namespace SemanticValidation
 {
     public class Car : Validatable<Car>
     {
-        public string Brand { get; set; }
-        public string Model { get; set; }
+        public Car()
+        {
+            NumbersOfDoors = 4;
+        }
+
+        public string? Brand { get; set; }
+        public int? NumbersOfDoors { get; set; }
+        public string? Model { get; set; }
 
         public override void Validate(Contract<Car> contract)
         {

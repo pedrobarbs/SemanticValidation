@@ -25,9 +25,11 @@ namespace SemanticValidation.Util.EqualityComparers
         {
             // TODO: fazer null check 
             // TODO: não funciona
-            return HashCode.Combine(
-                _expressionEqualityComparer.GetHashCode(obj.Expression),
-                obj.ValidationMessage.GetHashCode());
+            //return HashCode.Combine(
+            //    _expressionEqualityComparer.GetHashCode(obj.Expression),
+            //    obj.ValidationMessage.GetHashCode());
+
+            return _expressionEqualityComparer.GetHashCode(obj.Expression);
         }
     }
 }

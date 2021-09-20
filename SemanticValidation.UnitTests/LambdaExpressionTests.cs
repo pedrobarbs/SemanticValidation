@@ -8,7 +8,7 @@ namespace SemanticValidation.UnitTests
     public class LambdaExpressionTests
     {
         [Fact]
-        public void LambdaExpression_Equalities()
+        public void Expression_Equalities()
         {
             Expression<Func<bool>> expression = () => true;
 
@@ -19,7 +19,7 @@ namespace SemanticValidation.UnitTests
         }
 
         [Fact]
-        public void LambdaExpression_WhenConstantExpression()
+        public void Expression_WhenConstantExpression()
         {
             Expression<Func<bool>> expression = () => true;
 
@@ -30,7 +30,7 @@ namespace SemanticValidation.UnitTests
         }
 
         [Fact]
-        public void LambdaExpression_WhenNotAMemberExpression()
+        public void Expression_WhenNotAMemberExpression()
         {
             Expression<Func<bool>> expression = () => true;
 
@@ -40,7 +40,7 @@ namespace SemanticValidation.UnitTests
         }
 
         [Fact]
-        public void LambdaExpression_WhenMemberExpression()
+        public void Expression_WhenMemberExpression()
         {
             var car = new Car() { Brand = "Volvo" };
 
@@ -53,13 +53,11 @@ namespace SemanticValidation.UnitTests
         }
 
         [Fact]
-        public void LambdaExpression_WhenUnaryExpression()
+        public void Expression_WhenUnaryExpression()
         {
-            var car = new Car() { Brand = "Volvo" };
+            var car = new Car() { Brand = "Volvo", NumbersOfDoors = 4 };
 
-#pragma warning disable IDE0004
-            Expression<Func<object>> expression = () => (object)car.Brand;
-#pragma warning restore IDE0004
+            Expression<Func<uint>> expression = () => (uint)car.NumbersOfDoors;
 
             var converted = expression.Body as UnaryExpression;
 
@@ -70,5 +68,58 @@ namespace SemanticValidation.UnitTests
             // Quando há conversão a expressão NÃO é considerada como MemberExpression
             Assert.Null(expression.Body as MemberExpression);
         }
+
+        [Fact]
+        public void Expression_WhenMethodCallExpression()
+        {
+            var car = new Car() { Brand = "Volvo", NumbersOfDoors = 4 };
+
+            Expression<Func<uint?>> expression = () => GetNumbersOfDoors(car);
+
+            var converted = expression.Body as MethodCallExpression;
+
+            Assert.NotNull(converted);
+            Assert.Equal(ExpressionType.Call, converted?.NodeType);
+        }
+
+        [Fact]
+        public void Expression_WhenInvocationExpression()
+        {
+            InvocationExpression expression = Expression.Invoke(largeSumTest, Expression.Constant(10), Expression.Constant(999));
+
+            // Necessário converter pois InvocationExpression não é do tipo genérico "Expression<TDelegate>", que por herança, também seria LambdaExpression.
+            // Neste caso é necessário converter, explicitamente, a Expression para uma LambdaExpression, a fim de compilar e invocá-la.
+            var lambda = Expression.Lambda<Func<bool>>(expression);
+
+            var result = lambda.Compile()();
+
+            Assert.True(result);
+            Assert.Equal(ExpressionType.Invoke, expression?.NodeType);
+        }
+
+        [Fact]
+        public void Expression_WhenParameterExpression()
+        {
+            ParameterExpression param = Expression.Parameter(typeof(int));
+
+            MethodCallExpression methodCall = Expression.Call(
+                typeof(Console).GetMethod("WriteLine", new Type[] { typeof(int) })!,
+                param
+            );
+
+            Expression.Lambda<Action<int>>(
+                methodCall,
+                new ParameterExpression[] { param }
+            ).Compile()(10);
+        }
+
+        uint? GetNumbersOfDoors(Car? car)
+        {
+            return (uint?)car?.NumbersOfDoors;
+        }
+
+        string DummyMethod() => string.Empty;
+
+        Expression<Func<int, int, bool>> largeSumTest = (num1, num2) => (num1 + num2) > 1000;
     }
 }

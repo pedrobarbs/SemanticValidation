@@ -32,8 +32,8 @@ namespace SemanticValidation.Contract_Assembler
             return clause;
         }
 
-        public StringClauses Property(Expression<Func<string>> expression)
-            => (StringClauses)Property<string>(expression);
+        public StringClauses Property(Expression<Func<string?>> expression)
+            => (StringClauses)Property<string?>(expression);
 
         private static dynamic BuildClause<TParam>(string name, TParam? value)
         {
